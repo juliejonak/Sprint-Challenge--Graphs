@@ -46,18 +46,74 @@ else:
 #######
 # UNCOMMENT TO WALK AROUND
 #######
-player.currentRoom.printRoomDescription(player)
-while True:
-    cmds = input("-> ").lower().split(" ")
-    if cmds[0] in ["n", "s", "e", "w"]:
-        player.travel(cmds[0], True)
-    else:
-        print("I did not understand that command.")
+# player.currentRoom.printRoomDescription(player)
+# while True:
+#     cmds = input("-> ").lower().split(" ")
+#     if cmds[0] in ["n", "s", "e", "w"]:
+#         player.travel(cmds[0], True)
+#     else:
+#         print("I did not understand that command.")
+
+# Create a map
+map = {
+    0: { 'n': '?', 's': '?', 'e': '?', 'w': '?'}
+}
+
+directions = ['n', 's', 'e', 'w']
+
+# Prints room id of connected rooms by direction
+# name[5:] also removes 'Room ' from name string
+# print(player.currentRoom.n_to.id)
+# print(player.currentRoom.s_to.id)
+# print(player.currentRoom.w_to.id)
+# print(player.currentRoom.e_to.id)
+
+print(map[player.currentRoom.id])
+player.travel('n', showRooms = True)
+
+# Adds room to map if not yet visited
+if player.currentRoom.id not in map:
+    map[player.currentRoom.id] = { 'n': '?', 's': '?', 'e': '?', 'w': '?'}
+
+# Checks for any exits that are dead ends and marks them as None in map
+if player.currentRoom.n_to == None:
+    map[player.currentRoom.id]['n'] = None
+if player.currentRoom.s_to == None:
+    map[player.currentRoom.id]['s'] = None
+if player.currentRoom.e_to == None:
+    map[player.currentRoom.id]['e'] = None
+if player.currentRoom.w_to == None:
+    map[player.currentRoom.id]['w'] = None
+
+print(map[player.currentRoom.id])
+# map[player.currentRoom.id]['n'] = player.currentRoom.n_to.id
+# map[player.currentRoom.id]['s'] = player.currentRoom.s_to.id
+# map[player.currentRoom.id]['e'] = player.currentRoom.e_to.id
+# map[player.currentRoom.id]['w'] = player.currentRoom.w_to.id
+
+# print(map[player.currentRoom.id])
+
+# if map[player.currentRoom.id]['n'] not in map:
+#     print(f"Room {map[player.currentRoom.id]['n']} not yet visited")
+
+# if map[player.currentRoom.id]['s'] not in map:
+#     print(f"Room {map[player.currentRoom.id]['s']} not yet visited")
+
+# if map[player.currentRoom.id]['e'] not in map:
+#     print(f"Room {map[player.currentRoom.id]['e']} not yet visited")
+
+# if map[player.currentRoom.id]['w'] not in map:
+#     print(f"Room {map[player.currentRoom.id]['w']} not yet visited")
 
 # Use a DFT algorithm to traverse the map
-# Make it "walk" around
+# check current room's exits
+# if one == ?, go that way
+
+# if room not in map: map[room] = { 'n': '?', 's': '?', 'e': '?', 'w': '?'}
+# else check if any exits == ?
 
 # When an exit it not explored, explore it.
+# update map[room][directon] == next room id
 # Use BFS to find the closest unexplored exit ("?")
 # Walk that path, then run DFT from there
 
@@ -84,7 +140,7 @@ while True:
             # Append neighbor to the back of the copy
             # Enqueue copy
 
-            
+
 # BFS
 #Create an empty list to store the visited vertices
 
