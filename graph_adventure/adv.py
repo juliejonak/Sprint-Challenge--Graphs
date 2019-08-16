@@ -60,13 +60,8 @@ last_room = 0
 last_move = ''
 counter = 0
 
-# OPTIMIZE
-# while any exit == ?
-    # take first ?
-    # go until room with no ? exits
-    # then BFS to find closest ? exit
-
-# Can do the BFS without moving, by finding the closest ? through traversal, and only THEN moving player those moves (add to traversalPath)
+# TODO: Update previous room when traversing to prevent duplicate moves
+# TODO: Solve bug of not being able to move direction BFS is sending
 
 # while len < len(roomGraph)
 while len(map) < len(roomGraph) and counter < 26:
