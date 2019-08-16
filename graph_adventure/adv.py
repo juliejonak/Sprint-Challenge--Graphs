@@ -54,6 +54,36 @@ else:
 #     else:
 #         print("I did not understand that command.")
 
+
+
+
+class Queue():
+    def __init__(self):
+        self.queue = []
+    def enqueue(self, value):
+        self.queue.append(value)
+    def dequeue(self):
+        if self.size() > 0:
+            return self.queue.pop(0)
+        else:
+            return None
+    def size(self):
+        return len(self.queue)
+
+class Stack():
+    def __init__(self):
+        self.stack = []
+    def push(self, value):
+        self.stack.append(value)
+    def pop(self):
+        if self.size() > 0:
+            return self.stack.pop()
+        else:
+            return None
+    def size(self):
+        return len(self.stack)
+
+
 # Create a map
 map = {
     0: { 'n': '?', 's': '?', 'e': '?', 'w': '?'}
@@ -61,31 +91,48 @@ map = {
 
 directions = ['n', 's', 'e', 'w']
 
-# Prints room id of connected rooms by direction
-# name[5:] also removes 'Room ' from name string
-# print(player.currentRoom.n_to.id)
-# print(player.currentRoom.s_to.id)
-# print(player.currentRoom.w_to.id)
-# print(player.currentRoom.e_to.id)
+s = Stack()
+s.push( player.currentRoom.id )
+counter = 0
 
-print(map[player.currentRoom.id])
-player.travel('n', showRooms = True)
+while s.size() > 0 and counter < 5:
+    curr_room = s.pop()
+    print(f"current room: {curr_room}")
 
-# Adds room to map if not yet visited
-if player.currentRoom.id not in map:
-    map[player.currentRoom.id] = { 'n': '?', 's': '?', 'e': '?', 'w': '?'}
+    if curr_room not in map:
+        map[player.currentRoom.id] = { 'n': '?', 's': '?', 'e': '?', 'w': '?'}
 
-# Checks for any exits that are dead ends and marks them as None in map
-if player.currentRoom.n_to == None:
-    map[player.currentRoom.id]['n'] = None
-if player.currentRoom.s_to == None:
-    map[player.currentRoom.id]['s'] = None
-if player.currentRoom.e_to == None:
-    map[player.currentRoom.id]['e'] = None
-if player.currentRoom.w_to == None:
-    map[player.currentRoom.id]['w'] = None
+        # Checks for any exits that are dead ends and marks them as None in map
+        if player.currentRoom.n_to == None:
+            map[player.currentRoom.id]['n'] = None
+        if player.currentRoom.s_to == None:
+            map[player.currentRoom.id]['s'] = None
+        if player.currentRoom.e_to == None:
+            map[player.currentRoom.id]['e'] = None
+        if player.currentRoom.w_to == None:
+            map[player.currentRoom.id]['w'] = None
 
-print(map[player.currentRoom.id])
+        print(f"In Room {player.currentRoom.id}: {map[player.currentRoom.id]}")
+    
+    for key, value in map[player.currentRoom.id].items():
+        if value == '?':
+            print(f"We should explore {key}")
+            # set value to id of room going to
+            player.travel(key)
+            print(player.currentRoom.id)
+            s.push(player.currentRoom.id)
+            break
+    counter += 1
+
+print(map)
+
+# while any exit == ?
+    # take first ?
+    # go until room with no ? exits
+    # then BFS to find closest ? exit
+
+
+
 # map[player.currentRoom.id]['n'] = player.currentRoom.n_to.id
 # map[player.currentRoom.id]['s'] = player.currentRoom.s_to.id
 # map[player.currentRoom.id]['e'] = player.currentRoom.e_to.id
@@ -117,28 +164,7 @@ print(map[player.currentRoom.id])
 # Use BFS to find the closest unexplored exit ("?")
 # Walk that path, then run DFT from there
 
-# Mark dead ends as "None"
 
-# DFT
-# Create an empty set to store visited nodes
-
-# Create an empty Queue and enqueue A PATH to the starting vertex
-
-# While the queue is not empty...
-
-    # Dequeue the first PATH
-    # Grab the vertex from the end of the path!
-
-    # IF VERTEX = TARGET
-        # Return path
-
-    # If that vertex has not been visited...
-        # Mark it as visited
-        # Then add A PATH TO all of its neighbors to the back of the queue
-        
-            # Copy the path
-            # Append neighbor to the back of the copy
-            # Enqueue copy
 
 
 # BFS
