@@ -1,6 +1,7 @@
 from room import Room
 from player import Player
 from world import World
+from helperFunctions import find_nearest_unexplored
 
 import random
 
@@ -28,18 +29,7 @@ player = Player("Name", world.startingRoom)
 # FILL THIS IN
 traversalPath = []
 
-class Queue():
-    def __init__(self):
-        self.queue = []
-    def enqueue(self, value):
-        self.queue.append(value)
-    def dequeue(self):
-        if self.size() > 0:
-            return self.queue.pop(0)
-        else:
-            return None
-    def size(self):
-        return len(self.queue)
+
 
 class Stack():
     def __init__(self):
@@ -149,13 +139,13 @@ while len(map) < len(roomGraph) and counter < 26:
         # set currentRoom.id = room with ? exit
         # loop
         print("HIT THE ELSE")
+        next_path = find_nearest_unexplored(player.currentRoom.id, roomGraph, map)
 
-        checked = []
+        # traversalPath.append(next_path["path"])
+        # player.currentRoom.id = next_path["room"]
+        # map = next_path["updated_map"]
 
-        q = Queue()
-        q.enqueue( [player.currentRoom.id] )
 
-        
 
 
         pass
