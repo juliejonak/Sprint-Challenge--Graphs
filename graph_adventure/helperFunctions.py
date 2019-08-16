@@ -14,27 +14,20 @@ if player.currentRoom.id not in map:
 
 
 
-    
-# DFT
-# Create an empty set to store visited nodes
-visited = list()
+# BFS
+#Create an empty list to store the visited vertices
 
-# Create an empty Stack and push the starting vertex
-s = Stack()
-s.push(starting_vertex)
+# Create an empty Queue and enqueue & PATH TO the starting vertex
 
-# While the Stack is not empty...
-while s.size() > 0:
-
-    # Pop the first vertex from the stack
-    vertex = s.pop()
+# While the queue is not empty...
+    # Dequeue the first PATH
+    # GRAB THE VERTEX FROM THE END OF THE PATH
+    # IF VERTEX = TARGET, RETURN PATH
 
     # If that vertex has not been visited...
-    if vertex not in visited:
-
         # Mark it as visited
-        visited.append(vertex)
 
-        # Then add all of its neighbors to the top of the Stack
-        for neighbor in self.vertices[vertex]:
-            s.push(neighbor)
+        # Then add & PATH TO all of its neighbors to the back of the queue
+            # Copy the path so that the append is being added to the list copy, not to the actual list
+            # Append neighbor to the back of the copy
+            # Enqueue copy
