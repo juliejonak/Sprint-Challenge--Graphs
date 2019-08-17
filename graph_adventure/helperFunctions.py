@@ -1,35 +1,17 @@
-# Prints room id of connected rooms by direction
-# name[5:] also removes 'Room ' from name string
-# print(player.currentRoom.n_to.id)
-# print(player.currentRoom.s_to.id)
-# print(player.currentRoom.w_to.id)
-# print(player.currentRoom.e_to.id)
-
-# print(map[player.currentRoom.id])
-# player.travel('n', showRooms = True)
-
-# # Adds room to map if not yet visited
-# if player.currentRoom.id not in map:
-#     map[player.currentRoom.id] = { 'n': '?', 's': '?', 'e': '?', 'w': '?'}
-
-#####
-#                                        #
-#      017       002       014           #
-#       |         |         |            #
-#       |         |         |            #
-#      016--015--001--012--013           #
-#                 |                      #
-#                 |                      #
-#      008--007--000--003--004           #
-#       |         |                      #
-#       |         |                      #
-#      009       005                     #
-#       |         |                      #
-#       |         |                      #
-#      010--011--006                     #
-#                                        #
-
-
+class Stack():
+    def __init__(self):
+        self.stack = []
+    def __repr__(self):
+        return f"{self.stack}"
+    def push(self, value):
+        self.stack.append(value)
+    def pop(self):
+        if self.size() > 0:
+            return self.stack.pop()
+        else:
+            return None
+    def size(self):
+        return len(self.stack)
 
 class Queue():
     def __init__(self):
@@ -46,23 +28,91 @@ class Queue():
     def size(self):
         return len(self.queue)
 
-# BFS
-# Create an empty list to store the visited vertices
 
-# Create an empty Queue and enqueue & PATH TO the starting vertex
+def traverseMap(roomGraph, player):
+    traversalPath = []
 
-# While the queue is not empty...
-    # Dequeue the first PATH
-    # GRAB THE VERTEX FROM THE END OF THE PATH
-    # IF VERTEX = TARGET, RETURN PATH
+    # Create a map
+    map = {
+        0: { 'n': '?', 's': '?', 'e': '?', 'w': '?'}
+    }
 
-    # If that vertex has not been visited...
-        # Mark it as visited
+    s = Stack()
+    s.push( player.currentRoom.id )
+    last_room = 0
+    last_move = ''
+    counter = 0
 
-        # Then add & PATH TO all of its neighbors to the back of the queue
-            # Copy the path so that the append is being added to the list copy, not to the actual list
-            # Append neighbor to the back of the copy
-            # Enqueue copy
+    # TODO: Update previous room when traversing to prevent duplicate moves
+
+    # while len < len(roomGraph)
+    while len(map) < len(roomGraph):
+        # curr_room = s.pop()
+
+        if player.currentRoom.id not in map:
+            map[player.currentRoom.id] = { 'n': '?', 's': '?', 'e': '?', 'w': '?'}
+
+            # Checks for any exits that are dead ends and marks them as None in map
+            if player.currentRoom.n_to == None:
+                map[player.currentRoom.id]['n'] = None
+            if player.currentRoom.s_to == None:
+                map[player.currentRoom.id]['s'] = None
+            if player.currentRoom.e_to == None:
+                map[player.currentRoom.id]['e'] = None
+            if player.currentRoom.w_to == None:
+                map[player.currentRoom.id]['w'] = None
+
+        print(f"In Room {player.currentRoom.id}: {map[player.currentRoom.id]}")
+
+        if map[player.currentRoom.id]['n'] == '?':
+            traversalPath.append('n')
+            map[player.currentRoom.id]['n'] = player.currentRoom.n_to.id
+            last_move = 'n'
+            last_room = player.currentRoom.id
+            player.travel('n')
+            
+        elif map[player.currentRoom.id]['s'] == '?':
+            traversalPath.append('s')
+            map[player.currentRoom.id]['s'] = player.currentRoom.s_to.id
+            last_move = 's'
+            last_room = player.currentRoom.id
+            player.travel('s')
+
+        elif map[player.currentRoom.id]['e'] == '?':
+            print(f" \n Moving east from {player.currentRoom.id} to room {player.currentRoom.e_to.id}. {roomGraph[player.currentRoom.id]} --> {roomGraph[player.currentRoom.e_to.id]} \n")
+            traversalPath.append('e')
+            map[player.currentRoom.id]['e'] = player.currentRoom.e_to.id
+            last_move = 'e'
+            last_room = player.currentRoom.id
+            player.travel('e')
+            
+        elif map[player.currentRoom.id]['w'] == '?':
+            traversalPath.append('w')
+            map[player.currentRoom.id]['w'] = player.currentRoom.w_to.id
+            last_move = 'w'
+            last_room = player.currentRoom.id
+            player.travel('w')
+
+        else:
+            # BFS to nearest ?
+            # append to traversalPath
+            # set currentRoom.id = room with ? exit
+            # loop
+            print("HIT THE ELSE")
+            next_path = find_nearest_unexplored(player.currentRoom.id, roomGraph, map)
+
+            # Adds shortest path to next unexplored to traversalPath
+            # Moves player through those rooms
+            for direction in next_path["path"]:
+                print(f"Trying to move {direction} from {player.currentRoom.id}")
+                player.travel(direction)
+                traversalPath.append(direction)
+            
+            # Updates map with newly explored rooms
+            map = next_path["updated_map"]
+            
+    return traversalPath
+
 
 # return dict with { "room": integer, "path": [path_to_next_room], updated_map: { map } }
 def find_nearest_unexplored(curr_room, graph, map):
@@ -78,7 +128,8 @@ def find_nearest_unexplored(curr_room, graph, map):
         print(f"Top of while: Check: {check}")
         curr_path = check["path"]
         curr_room2 = check["room"]
-        print(f"Checking room {curr_room2} in graph: {map}")
+        # print(f"Checking room {curr_room2} in graph: {map}")
+        print(f"Checking room {curr_room2}")
 
         # check all directions of current room
         # if next room has "?", make new path
@@ -103,6 +154,7 @@ def find_nearest_unexplored(curr_room, graph, map):
 
     for direction in chosen_path:
         # Sets the next room to be the direction we'll traverse in
+        print(f"Trying to move from {curr_room} {direction}")
         next_room = graph[curr_room][1][direction]
         print(f"Moving {direction} from room {curr_room}. Next room is room {next_room}")
 
