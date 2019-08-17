@@ -28,7 +28,6 @@ class Queue():
     def size(self):
         return len(self.queue)
 
-
 def traverseMap(roomGraph, player):
     """
     Returns list of directions to move
@@ -47,13 +46,11 @@ def traverseMap(roomGraph, player):
     s.push( player.currentRoom.id )
     last_room = 0
     last_move = ''
-    counter = 0
 
     # TODO: Update previous room when traversing to prevent duplicate moves
 
     # while len < len(roomGraph)
     while len(map) < len(roomGraph):
-        # curr_room = s.pop()
 
         if player.currentRoom.id not in map:
             map[player.currentRoom.id] = { 'n': '?', 's': '?', 'e': '?', 'w': '?'}
@@ -67,9 +64,19 @@ def traverseMap(roomGraph, player):
                 map[player.currentRoom.id]['e'] = None
             if player.currentRoom.w_to == None:
                 map[player.currentRoom.id]['w'] = None
+        
+        # Updates last room with direction moved
+        for i in range(0,1):
+            if last_move == 'n':
+                map[player.currentRoom.id]['s'] = last_room
+            elif last_move == 's':
+                map[player.currentRoom.id]['n'] = last_room
+            elif last_move == 'e':
+                map[player.currentRoom.id]['w'] = last_room
+            elif last_move == 'w':
+                map[player.currentRoom.id]['e'] = last_room
 
-        # print(f"In Room {player.currentRoom.id}: {map[player.currentRoom.id]}")
-
+        # depending on direction, adds to traversalPath, and records last move/room, moves player
         if map[player.currentRoom.id]['n'] == '?':
             traversalPath.append('n')
             map[player.currentRoom.id]['n'] = player.currentRoom.n_to.id
@@ -99,6 +106,10 @@ def traverseMap(roomGraph, player):
             player.travel('w')
 
         else:
+            # if all rooms now visited, end
+            if len(map) == len(roomGraph):
+                break
+
             # BFS to nearest unexplored exit and appends to traversalPath
             next_path = find_nearest_unexplored(player.currentRoom.id, roomGraph, map)
 
@@ -109,13 +120,23 @@ def traverseMap(roomGraph, player):
                 player.travel(direction)
                 traversalPath.append(direction)
             
+            last_move = next_path["path"][-1]
+                        
             # Updates map with newly explored rooms
             map = next_path["updated_map"]
 
+            # updates last room based on final move in BFS array returned
+            if last_move == 'n':
+                last_room = map[player.currentRoom.id]['s']
+            elif last_move == 's':
+                last_room = map[player.currentRoom.id]['n']
+            elif last_move == 'e':
+                last_room = map[player.currentRoom.id]['w']
+            elif last_move == 'w':
+                last_room = map[player.currentRoom.id]['e']
+            
     return traversalPath
 
-
-# returns dict with { "room": integer, "path": [path_to_next_room], updated_map: { map } }
 
 def find_nearest_unexplored(curr_room, graph, map):
     """
@@ -132,6 +153,7 @@ def find_nearest_unexplored(curr_room, graph, map):
     chosen_path = None
 
     while not path_found:
+        
         check = q.dequeue()
         curr_path = check["path"]
         curr_room2 = check["room"]
